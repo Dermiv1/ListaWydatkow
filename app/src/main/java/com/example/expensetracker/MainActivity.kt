@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -140,18 +144,35 @@ fun ExpenseTracker() {
         } else {
             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
                 itemsIndexed(expenseList) { index, item ->
-                    Text(
-                        text = "${item.name}, ${item.amount} PLN, ${item.category}",
-                        style = MaterialTheme.typography.titleMedium,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
-                            .background(getItemColor(index))
-                            .clickable { expenseList.remove(item) }
-                    )
+                            .background(getItemColor(index)),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${item.name}, ${item.amount} PLN, ${item.category}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.weight(1f).padding(start = 8.dp)
+                        )
+                        IconButton(onClick = { expenseList.remove(item) }) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
+                        }
+                    }
                 }
             }
         }
+
+        val totalAmount = expenseList.sumOf { it.amount }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Suma wydatków: $totalAmount PLN",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 
